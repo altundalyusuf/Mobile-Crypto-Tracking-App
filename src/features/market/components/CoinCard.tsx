@@ -8,12 +8,14 @@ import { colors } from "../../../theme/colors";
 interface CoinCardProps {
   coin: Coin;
   onFavoritePress: (coin: Coin) => void;
+  onPress?: (coin: Coin) => void;
   isFavorite?: boolean;
 }
 
 export default function CoinCard({
   coin,
   onFavoritePress,
+  onPress,
   isFavorite = false,
 }: CoinCardProps) {
   const [imageError, setImageError] = useState(false);
@@ -88,7 +90,11 @@ export default function CoinCard({
   };
 
   return (
-    <View style={styles.card}>
+    <Pressable
+      style={styles.card}
+      onPress={() => onPress?.(coin)}
+      disabled={!onPress}
+    >
       {/* Left: Icon */}
       <View style={styles.iconContainer}>{renderIcon()}</View>
 
@@ -126,7 +132,7 @@ export default function CoinCard({
           color={isFavorite ? colors.error : colors.textSecondary}
         />
       </Pressable>
-    </View>
+    </Pressable>
   );
 }
 

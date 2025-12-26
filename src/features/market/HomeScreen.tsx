@@ -12,12 +12,15 @@ import { Coin } from "../../types/coin";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { toggleFavorite } from "../../features/favorites/favoritesSlice";
 import CoinCard from "./components/CoinCard";
+import CoinDetailModal from "./components/CoinDetailModal";
 
 const LIMIT = 20;
 
 export default function HomeScreen() {
   const dispatch = useAppDispatch();
   const favorites = useAppSelector((state) => state.favorites.favorites);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCoin, setSelectedCoin] = useState<Coin | null>(null);
   const [allCoins, setAllCoins] = useState<Coin[]>([]);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -63,12 +66,18 @@ export default function HomeScreen() {
     dispatch(toggleFavorite(coin));
   };
 
+  const handleCoinPress = (coin: Coin) => {
+    setSelectedCoin(coin);
+    setModalVisible(true);
+  };
+
   const renderCoin = ({ item }: { item: Coin }) => {
     const isFavorite = favorites.some((fav) => fav.uuid === item.uuid);
     return (
       <CoinCard
         coin={item}
         onFavoritePress={handleFavoritePress}
+        onPress={handleCoinPress}
         isFavorite={isFavorite}
       />
     );
@@ -122,6 +131,11 @@ export default function HomeScreen() {
         removeClippedSubviews={true}
         maxToRenderPerBatch={10}
         windowSize={10}
+      />
+      <CoinDetailModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        coin={selectedCoin}
       />
     </View>
   );
