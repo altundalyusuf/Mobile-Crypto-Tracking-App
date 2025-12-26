@@ -31,3 +31,20 @@ export interface GetCoinsParams {
   orderBy?: string; // e.g., "price", "marketCap", "24hVolume", "change"
 }
 
+export interface CoinHistoryPoint {
+  price: string;
+  timestamp: number;
+}
+
+export interface CoinHistoryResponse {
+  status: string;
+  data: {
+    history: CoinHistoryPoint[];
+  };
+}
+
+export interface GetCoinHistoryParams {
+  uuid: string;
+  timePeriod?: string; // e.g., "24h", "7d", "30d"
+}
+

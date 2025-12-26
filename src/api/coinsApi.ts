@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { CoinsResponse, GetCoinsParams } from "../types/coin";
+import {
+  CoinsResponse,
+  GetCoinsParams,
+  CoinHistoryResponse,
+  GetCoinHistoryParams,
+} from "../types/coin";
 
 export const coinsApi = createApi({
   reducerPath: "coinsApi",
@@ -33,8 +38,21 @@ export const coinsApi = createApi({
         };
       },
     }),
+    getCoinHistory: builder.query<CoinHistoryResponse, GetCoinHistoryParams>({
+      query: (params) => {
+        const { uuid, timePeriod = "24h" } = params;
+        const queryParams = new URLSearchParams({
+          timePeriod: timePeriod,
+        });
+
+        return {
+          url: `/coin/${uuid}/history?${queryParams.toString()}`,
+          method: "GET",
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetCoinsQuery } = coinsApi;
+export const { useGetCoinsQuery, useGetCoinHistoryQuery } = coinsApi;
 

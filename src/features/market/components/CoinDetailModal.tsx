@@ -11,6 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { Coin } from "../../../types/coin";
 import { colors } from "../../../theme/colors";
+import CoinChart from "./CoinChart";
 
 interface CoinDetailModalProps {
   visible: boolean;
@@ -111,6 +112,9 @@ export default function CoinDetailModal({
                 {change.toFixed(2)}%
               </Text>
             </View>
+
+            {/* Chart Area */}
+            <CoinChart coinId={coin.uuid} />
 
             {/* Stats: Market Cap and Rank */}
             <View style={styles.statsContainer}>
