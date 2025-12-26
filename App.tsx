@@ -3,7 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { Provider } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { store } from "./src/store/store";
+import { store, RootState } from "./src/store/store";
 import { useAppDispatch, useAppSelector } from "./src/store/hooks";
 import { checkSession, setSession } from "./src/features/auth/authSlice";
 import { loadFavorites } from "./src/features/favorites/favoritesSlice";
@@ -21,7 +21,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function AppContent() {
   const dispatch = useAppDispatch();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     // Check session on app start

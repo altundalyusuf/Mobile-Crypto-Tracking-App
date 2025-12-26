@@ -1,12 +1,12 @@
 src/
-├── api/ # CoinRanking API (RTK Query kullanacaksan burası değişir, aşağıyı oku)
-├── components/ # Ortak componentler
-├── features/ # Özellik bazlı ayrım
-│ ├── auth/ # AuthSlice.ts burada olacak
-│ ├── market/ # MarketSlice.ts burada
-│ └── favorites/ # FavoritesSlice.ts burada
-├── navigation/ # Navigasyon
-├── store/ # store.ts (Main configuration) ve hooks.ts (useAppDispatch, useAppSelector)
-├── theme/ # Renkler/Fontlar
-├── types/ # Interface'ler
-└── utils/ # Helper'lar
+├── api/ # CoinRanking API
+├── components/ # Common components
+├── features/ # feature based distinction
+│ ├── auth/ # AuthSlice.ts
+│ ├── market/ # MarketSlice.ts
+│ └── favorites/ # FavoritesSlice.ts
+├── navigation/
+├── store/ # store.ts (Main configuration) and hooks.ts (useAppDispatch, useAppSelector)
+├── theme/ # Colors/Fonts
+├── types/ # Interfaces
+└── utils/ # Helpers
