@@ -8,9 +8,14 @@ import { colors } from "../../../theme/colors";
 interface CoinCardProps {
   coin: Coin;
   onFavoritePress: (coin: Coin) => void;
+  isFavorite?: boolean;
 }
 
-export default function CoinCard({ coin, onFavoritePress }: CoinCardProps) {
+export default function CoinCard({
+  coin,
+  onFavoritePress,
+  isFavorite = false,
+}: CoinCardProps) {
   const [imageError, setImageError] = useState(false);
   const change = parseFloat(coin.change);
   const isPositive = change >= 0;
@@ -115,7 +120,11 @@ export default function CoinCard({ coin, onFavoritePress }: CoinCardProps) {
         style={styles.favoriteButton}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
       >
-        <Ionicons name="heart-outline" size={20} color={colors.textSecondary} />
+        <Ionicons
+          name={isFavorite ? "heart" : "heart-outline"}
+          size={20}
+          color={isFavorite ? colors.error : colors.textSecondary}
+        />
       </Pressable>
     </View>
   );

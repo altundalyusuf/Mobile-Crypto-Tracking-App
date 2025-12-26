@@ -9,11 +9,15 @@ import {
 import { colors } from "../../theme/colors";
 import { useGetCoinsQuery } from "../../api/coinsApi";
 import { Coin } from "../../types/coin";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { toggleFavorite } from "../../features/favorites/favoritesSlice";
 import CoinCard from "./components/CoinCard";
 
 const LIMIT = 20;
 
 export default function HomeScreen() {
+  const dispatch = useAppDispatch();
+  const favorites = useAppSelector((state) => state.favorites.favorites);
   const [allCoins, setAllCoins] = useState<Coin[]>([]);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -56,13 +60,19 @@ export default function HomeScreen() {
   }, [isFetching, hasMore, isLoading]);
 
   const handleFavoritePress = (coin: Coin) => {
-    console.log("Favorite pressed for:", coin.name);
-    // TODO: Implement favorite logic
+    dispatch(toggleFavorite(coin));
   };
 
-  const renderCoin = ({ item }: { item: Coin }) => (
-    <CoinCard coin={item} onFavoritePress={handleFavoritePress} />
-  );
+  const renderCoin = ({ item }: { item: Coin }) => {
+    const isFavorite = favorites.some((fav) => fav.uuid === item.uuid);
+    return (
+      <CoinCard
+        coin={item}
+        onFavoritePress={handleFavoritePress}
+        isFavorite={isFavorite}
+      />
+    );
+  };
 
   const renderFooter = () => {
     if (!isFetching || isLoading) return null;

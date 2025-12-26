@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { store } from "./src/store/store";
 import { useAppDispatch, useAppSelector } from "./src/store/hooks";
 import { checkSession, setSession } from "./src/features/auth/authSlice";
+import { loadFavorites } from "./src/features/favorites/favoritesSlice";
 import { supabase } from "./src/lib/supabase";
 import LoginScreen from "./src/features/auth/LoginScreen";
 import TabNavigator from "./src/navigation/TabNavigator";
@@ -25,6 +26,9 @@ function AppContent() {
   useEffect(() => {
     // Check session on app start
     dispatch(checkSession());
+
+    // Load favorites from AsyncStorage on app start
+    dispatch(loadFavorites());
 
     // Set up auth state change listener
     const {
