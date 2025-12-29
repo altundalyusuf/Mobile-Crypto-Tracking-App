@@ -29,7 +29,7 @@ export default function FavoritesScreen() {
     [favorites]
   );
 
-  const { data, isFetching } = useGetCoinsQuery(
+  const { data, isFetching, isLoading } = useGetCoinsQuery(
     { uuids: favoriteUuids, limit: 50 },
     {
       skip: favoriteUuids.length === 0,
@@ -39,9 +39,19 @@ export default function FavoritesScreen() {
   );
 
   const displayData = useMemo(() => {
-    if (data?.data?.coins) {
-      return data.data.coins;
+    const freshCoins = data?.data?.coins || [];
+    
+    if (freshCoins.length > 0) {
+      const freshCoinsMap = new Map(freshCoins.map((coin) => [coin.uuid, coin]));
+      const mergedCoins = favorites
+        .map((favCoin) => {
+          const freshCoin = freshCoinsMap.get(favCoin.uuid);
+          return freshCoin || favCoin;
+        })
+        .filter((coin) => coin !== undefined);
+      return mergedCoins;
     }
+    
     return favorites;
   }, [data, favorites]);
 
