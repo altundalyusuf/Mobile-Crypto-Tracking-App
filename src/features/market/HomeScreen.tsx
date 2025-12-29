@@ -14,6 +14,8 @@ import { toggleFavorite } from "../../features/favorites/favoritesSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { colors } from "../../theme/colors";
 import { Coin } from "../../types/coin";
+import { useDebounce } from "../../utils/hooks/useDebounce";
+import { useCoinPagination } from "./hooks/useCoinPagination";
 import CoinCard from "./components/CoinCard";
 import CoinDetailModal from "./components/CoinDetailModal";
 
@@ -24,58 +26,32 @@ export default function HomeScreen() {
   const favorites = useAppSelector((state) => state.favorites.favorites);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCoin, setSelectedCoin] = useState<Coin | null>(null);
-  const [allCoins, setAllCoins] = useState<Coin[]>([]);
   const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
   const [searchText, setSearchText] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [orderBy, setOrderBy] = useState("marketCap");
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchText);
-      setOffset(0);
-      setAllCoins([]);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchText]);
+  const debouncedSearch = useDebounce(searchText.trim(), 500);
+  // There is a bug in the API, so we need to add a minimum length of 2 for the search.
+  const validSearch = debouncedSearch.length >= 2 ? debouncedSearch : undefined;
 
   useEffect(() => {
     setOffset(0);
-    setAllCoins([]);
-  }, [orderBy]);
+  }, [orderBy, debouncedSearch]);
 
   const { data, error, isLoading, isFetching } = useGetCoinsQuery({
     limit: LIMIT,
     offset: offset,
-    search: debouncedSearch || undefined,
+    search: validSearch,
     orderBy: orderBy,
   });
 
-  useEffect(() => {
-    if (data?.data?.coins) {
-      const newCoins = data.data.coins;
-
-      if (offset === 0 || debouncedSearch) {
-        setAllCoins(newCoins);
-      } else {
-        setAllCoins((prev) => {
-          const existingUuids = new Set(prev.map((coin) => coin.uuid));
-          const uniqueNewCoins = newCoins.filter(
-            (coin) => !existingUuids.has(coin.uuid)
-          );
-          return [...prev, ...uniqueNewCoins];
-        });
-      }
-
-      if (newCoins.length < LIMIT) {
-        setHasMore(false);
-      } else {
-        setHasMore(true);
-      }
-    }
-  }, [data, offset, debouncedSearch, orderBy]);
+  const { allCoins, hasMore } = useCoinPagination({
+    data,
+    limit: LIMIT,
+    offset,
+    debouncedSearch,
+    orderBy,
+  });
 
   const handleLoadMore = useCallback(() => {
     if (!isFetching && hasMore && !isLoading && !debouncedSearch) {
@@ -95,7 +71,6 @@ export default function HomeScreen() {
   const handleFilterPress = (filter: string): void => {
     setOrderBy(filter);
     setOffset(0);
-    setAllCoins([]);
   };
 
   const filterOptions = [

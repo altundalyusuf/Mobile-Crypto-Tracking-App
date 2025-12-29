@@ -11,17 +11,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../../theme/colors";
 import { Coin } from "../../../types/coin";
 import CoinChart from "./CoinChart";
+import { formatPrice, formatLargeNumber, getImageUrl } from "../../../utils/formatters";
 
 interface CoinDetailModalProps {
   visible: boolean;
   onClose: () => void;
   coin: Coin | null;
 }
-
-const getImageUrl = (url: string): string => {
-  if (!url) return "";
-  return url.replace(/\.svg$/i, ".png");
-};
 
 export default function CoinDetailModal({
   visible,
@@ -33,28 +29,6 @@ export default function CoinDetailModal({
   const price = parseFloat(coin.price);
   const change = parseFloat(coin.change);
   const isPositive = change >= 0;
-
-  const formatPrice = (value: number): string => {
-    if (value >= 1) {
-      return `$${value.toFixed(2)}`;
-    } else {
-      return `$${value.toFixed(6)}`;
-    }
-  };
-
-  const formatLargeNumber = (value: string): string => {
-    const num = parseFloat(value);
-    if (num >= 1e12) {
-      return `$${(num / 1e12).toFixed(2)}T`;
-    } else if (num >= 1e9) {
-      return `$${(num / 1e9).toFixed(2)}B`;
-    } else if (num >= 1e6) {
-      return `$${(num / 1e6).toFixed(2)}M`;
-    } else if (num >= 1e3) {
-      return `$${(num / 1e3).toFixed(2)}K`;
-    }
-    return `$${num.toFixed(2)}`;
-  };
 
   return (
     <Modal

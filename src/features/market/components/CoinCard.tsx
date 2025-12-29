@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { SvgUri } from "react-native-svg";
 import { colors } from "../../../theme/colors";
 import { Coin } from "../../../types/coin";
+import { formatPrice, getFileExtension } from "../../../utils/formatters";
 
 interface CoinCardProps {
   coin: Coin;
@@ -22,20 +23,6 @@ function CoinCard({
   const change = parseFloat(coin.change);
   const isPositive = change >= 0;
   const price = parseFloat(coin.price);
-
-  const formatPrice = (value: number): string => {
-    if (value >= 1) {
-      return `$${value.toFixed(2)}`;
-    } else {
-      return `$${value.toFixed(6)}`;
-    }
-  };
-
-  const getFileExtension = (url: string): string => {
-    if (!url) return "";
-    const match = url.match(/\.([^.?#]+)(\?|#|$)/);
-    return match ? match[1].toLowerCase() : "";
-  };
 
   const renderFallback = () => (
     <View style={styles.iconFallback}>

@@ -21,6 +21,8 @@ src/
 │       │   ├── CoinCard.tsx     # Individual coin card component
 │       │   ├── CoinChart.tsx    # Price history chart component
 │       │   └── CoinDetailModal.tsx # Coin detail modal with chart and stats
+│       ├── hooks/               # Market-specific custom hooks
+│       │   └── useCoinPagination.ts # Pagination and data aggregation logic
 │       └── HomeScreen.tsx       # Main market screen with search, filters, and pagination
 │
 ├── lib/                          # External service configurations
@@ -39,7 +41,10 @@ src/
 ├── types/                        # TypeScript type definitions
 │   └── coin.ts                  # CoinRanking API interfaces (Coin, CoinsResponse, etc.)
 │
-└── utils/                        # Utility functions (currently empty)
+└── utils/                        # Utility functions
+    ├── formatters.ts            # Formatting utilities (price, numbers, URLs)
+    └── hooks/                   # Shared custom hooks
+        └── useDebounce.ts       # Debounce hook for search inputs
 ```
 
 ## Key Architecture Decisions
@@ -53,8 +58,9 @@ src/
 ### Feature Organization
 
 - Features are self-contained with their own slices and screens
-- Market feature includes reusable components in a subfolder
+- Market feature includes reusable components and hooks in subfolders
 - No shared components folder (components are feature-specific)
+- Shared utilities and hooks are in `utils/` directory
 
 ### Navigation
 

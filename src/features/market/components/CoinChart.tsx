@@ -9,6 +9,7 @@ import {
 import { LineChart } from "react-native-gifted-charts";
 import { useGetCoinHistoryQuery } from "../../../api/coinsApi";
 import { colors } from "../../../theme/colors";
+import { formatPrice } from "../../../utils/formatters";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const CHART_WIDTH = SCREEN_WIDTH - 80;
@@ -26,14 +27,6 @@ export default function CoinChart({ coinId, priceChange }: CoinChartProps) {
 
   const chartColor =
     parseFloat(priceChange) < 0 ? colors.error : colors.success;
-
-  const formatPrice = (value: number): string => {
-    if (value >= 1) {
-      return `$${value.toFixed(2)}`;
-    } else {
-      return `$${value.toFixed(6)}`;
-    }
-  };
 
   const { chartData, spacing, yAxisOffset, relativeMaxValue, minVal, maxVal } =
     useMemo(() => {
