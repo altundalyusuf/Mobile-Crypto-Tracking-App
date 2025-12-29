@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 20,
     marginRight: 8,
-    marginBottom: 8,
+    marginBottom: 24,
     borderWidth: 1,
     height: 42,
     alignItems: "center",
@@ -293,6 +293,7 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     marginTop: 16,
     fontSize: 14,
+    textAlign: "center",
   },
   errorText: {
     color: colors.error,

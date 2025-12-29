@@ -1,17 +1,26 @@
+import { useEffect, useRef } from "react";
 import {
+  Animated,
+  Dimensions,
   Image,
   Modal,
+  PanResponder,
   Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../../theme/colors";
 import { Coin } from "../../../types/coin";
 import CoinChart from "./CoinChart";
-import { formatPrice, formatLargeNumber, getImageUrl } from "../../../utils/formatters";
+import {
+  formatPrice,
+  formatLargeNumber,
+  getImageUrl,
+} from "../../../utils/formatters";
+
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const DRAG_THRESHOLD = 100;
 
 interface CoinDetailModalProps {
   visible: boolean;
@@ -24,6 +33,52 @@ export default function CoinDetailModal({
   onClose,
   coin,
 }: CoinDetailModalProps) {
+  const translateY = useRef(new Animated.Value(0)).current;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+
+      onPanResponderGrant: () => {
+        // We are not using offset, starting from 0
+      },
+
+      onPanResponderMove: (_, gestureState) => {
+        // Only allow downward movement
+        if (gestureState.dy >= 0) {
+          translateY.setValue(gestureState.dy);
+        }
+      },
+
+      onPanResponderRelease: (_, gestureState) => {
+        // If the modal is dragged quickly or sufficiently downward, close it
+        if (gestureState.dy > DRAG_THRESHOLD || gestureState.vy > 0.5) {
+          Animated.timing(translateY, {
+            toValue: SCREEN_HEIGHT,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => {
+            onClose();
+          });
+        } else {
+          // If the modal is not closed, spring back to the original position
+          Animated.spring(translateY, {
+            toValue: 0,
+            useNativeDriver: true,
+            bounciness: 4,
+          }).start();
+        }
+      },
+    })
+  ).current;
+
+  // Reset the position when the modal is opened
+  useEffect(() => {
+    if (visible) {
+      translateY.setValue(0);
+    }
+  }, [visible, translateY]);
+
   if (!coin) return null;
 
   const price = parseFloat(coin.price);
@@ -33,25 +88,23 @@ export default function CoinDetailModal({
   return (
     <Modal
       visible={visible}
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
         <Pressable style={styles.backdrop} onPress={onClose} />
-        <View style={styles.sheet}>
-          <View style={styles.handleBar} />
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={onClose}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Ionicons
-              name="close-circle"
-              size={28}
-              color={colors.textSecondary}
-            />
-          </TouchableOpacity>
+
+        <Animated.View
+          style={[styles.sheet, { transform: [{ translateY }] }]}
+          {...panResponder.panHandlers}
+        >
+          {/* Handle Bar (Drag Zone)*/}
+          <View style={styles.handleBarContainer}>
+            <View style={styles.handleBar} />
+          </View>
+
+          {/* Content */}
           <View style={styles.content}>
             <View style={styles.header}>
               <Image
@@ -64,6 +117,7 @@ export default function CoinDetailModal({
                 <Text style={styles.coinSymbol}>{coin.symbol}</Text>
               </View>
             </View>
+
             <View style={styles.priceSection}>
               <Text style={styles.price}>{formatPrice(price)}</Text>
               <Text
@@ -76,7 +130,9 @@ export default function CoinDetailModal({
                 {change.toFixed(2)}%
               </Text>
             </View>
+
             <CoinChart coinId={coin.uuid} priceChange={coin.change} />
+
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
                 <Text style={styles.statLabel}>Market Cap</Text>
@@ -90,7 +146,7 @@ export default function CoinDetailModal({
               </View>
             </View>
           </View>
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );
@@ -109,26 +165,24 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingTop: 12,
-    paddingBottom: 24,
     maxHeight: "90%",
+    width: "100%",
+    paddingBottom: 24,
+  },
+  handleBarContainer: {
+    alignItems: "center",
+    paddingVertical: 12,
+    width: "100%",
   },
   handleBar: {
     width: 40,
-    height: 4,
+    height: 5,
     backgroundColor: colors.border,
-    borderRadius: 2,
-    alignSelf: "center",
-    marginBottom: 16,
-  },
-  closeButton: {
-    position: "absolute",
-    top: 12,
-    right: 16,
-    zIndex: 1,
+    borderRadius: 3,
   },
   content: {
     paddingHorizontal: 24,
+    marginTop: 8,
   },
   header: {
     flexDirection: "row",
