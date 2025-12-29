@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, Pressable, Image } from "react-native";
-import { SvgUri } from "react-native-svg";
+import React, { useState } from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
-import { Coin } from "../../../types/coin";
+import { SvgUri } from "react-native-svg";
 import { colors } from "../../../theme/colors";
+import { Coin } from "../../../types/coin";
 
 interface CoinCardProps {
   coin: Coin;
@@ -12,7 +12,7 @@ interface CoinCardProps {
   isFavorite?: boolean;
 }
 
-export default function CoinCard({
+function CoinCard({
   coin,
   onFavoritePress,
   onPress,
@@ -31,25 +31,21 @@ export default function CoinCard({
     }
   };
 
-  // Check file extension to determine if it's SVG or image
   const getFileExtension = (url: string): string => {
     if (!url) return "";
     const match = url.match(/\.([^.?#]+)(\?|#|$)/);
     return match ? match[1].toLowerCase() : "";
   };
 
-  // Render fallback circle with first letter
   const renderFallback = () => (
     <View style={styles.iconFallback}>
       <Text style={styles.iconFallbackText}>
-        {coin.symbol ? coin.symbol.charAt(0).toUpperCase() : "?"}111
+        {coin.symbol ? coin.symbol.charAt(0).toUpperCase() : "?"}
       </Text>
     </View>
   );
 
-  // Render icon based on type
   const renderIcon = () => {
-    // If no iconUrl or error occurred, show fallback
     if (!coin.iconUrl || imageError) {
       return renderFallback();
     }
@@ -61,7 +57,6 @@ export default function CoinCard({
       fileExtension === "jpg" ||
       fileExtension === "jpeg";
 
-    // Render SVG
     if (isSvg) {
       return (
         <SvgUri
@@ -73,7 +68,6 @@ export default function CoinCard({
       );
     }
 
-    // Render PNG/JPG image
     if (isImage) {
       return (
         <Image
@@ -85,7 +79,6 @@ export default function CoinCard({
       );
     }
 
-    // Fallback for unknown extensions or missing iconUrl
     return renderFallback();
   };
 
@@ -95,18 +88,13 @@ export default function CoinCard({
       onPress={() => onPress?.(coin)}
       disabled={!onPress}
     >
-      {/* Left: Icon */}
       <View style={styles.iconContainer}>{renderIcon()}</View>
-
-      {/* Middle: Name and Symbol */}
       <View style={styles.infoContainer}>
         <Text style={styles.coinName} numberOfLines={1}>
           {coin.name}
         </Text>
         <Text style={styles.coinSymbol}>{coin.symbol}</Text>
       </View>
-
-      {/* Right: Price and Change */}
       <View style={styles.priceContainer}>
         <Text style={styles.price}>{formatPrice(price)}</Text>
         <Text
@@ -119,8 +107,6 @@ export default function CoinCard({
           {change.toFixed(2)}%
         </Text>
       </View>
-
-      {/* Favorite Button */}
       <Pressable
         onPress={() => onFavoritePress(coin)}
         style={styles.favoriteButton}
@@ -135,6 +121,8 @@ export default function CoinCard({
     </Pressable>
   );
 }
+
+export default React.memo(CoinCard);
 
 const styles = StyleSheet.create({
   card: {

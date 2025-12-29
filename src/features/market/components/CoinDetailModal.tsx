@@ -1,16 +1,15 @@
-import React from "react";
 import {
+  Image,
+  Modal,
+  Pressable,
   StyleSheet,
   Text,
-  View,
-  Modal,
-  Image,
-  Pressable,
   TouchableOpacity,
+  View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Coin } from "../../../types/coin";
 import { colors } from "../../../theme/colors";
+import { Coin } from "../../../types/coin";
 import CoinChart from "./CoinChart";
 
 interface CoinDetailModalProps {
@@ -19,7 +18,6 @@ interface CoinDetailModalProps {
   coin: Coin | null;
 }
 
-// Helper function to replace .svg extension with .png
 const getImageUrl = (url: string): string => {
   if (!url) return "";
   return url.replace(/\.svg$/i, ".png");
@@ -68,10 +66,7 @@ export default function CoinDetailModal({
       <View style={styles.overlay}>
         <Pressable style={styles.backdrop} onPress={onClose} />
         <View style={styles.sheet}>
-          {/* Handle bar */}
           <View style={styles.handleBar} />
-
-          {/* Close button */}
           <TouchableOpacity
             style={styles.closeButton}
             onPress={onClose}
@@ -83,10 +78,7 @@ export default function CoinDetailModal({
               color={colors.textSecondary}
             />
           </TouchableOpacity>
-
-          {/* Content */}
           <View style={styles.content}>
-            {/* Header: Icon, Name, Symbol */}
             <View style={styles.header}>
               <Image
                 source={{ uri: getImageUrl(coin.iconUrl) }}
@@ -98,8 +90,6 @@ export default function CoinDetailModal({
                 <Text style={styles.coinSymbol}>{coin.symbol}</Text>
               </View>
             </View>
-
-            {/* Price (Large) */}
             <View style={styles.priceSection}>
               <Text style={styles.price}>{formatPrice(price)}</Text>
               <Text
@@ -112,11 +102,7 @@ export default function CoinDetailModal({
                 {change.toFixed(2)}%
               </Text>
             </View>
-
-            {/* Chart Area */}
-            <CoinChart coinId={coin.uuid} />
-
-            {/* Stats: Market Cap and Rank */}
+            <CoinChart coinId={coin.uuid} priceChange={coin.change} />
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
                 <Text style={styles.statLabel}>Market Cap</Text>

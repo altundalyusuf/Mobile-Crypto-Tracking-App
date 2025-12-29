@@ -10,30 +10,41 @@ export const coinsApi = createApi({
   reducerPath: "coinsApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "https://api.coinranking.com/v2",
-    prepareHeaders: (headers, { getState }) => {
-      // Optional: Add x-access-token if available
-      // const token = (getState() as RootState).auth.session?.access_token;
-      // if (token) {
-      //   headers.set("x-access-token", token);
-      // }
+    prepareHeaders: (headers) => {
+      const apiKey = process.env.EXPO_PUBLIC_COINRANKING_API_KEY;
+      if (apiKey) {
+        headers.set("x-access-token", apiKey);
+      }
       return headers;
     },
   }),
+  keepUnusedDataFor: 60,
+
   endpoints: (builder) => ({
     getCoins: builder.query<CoinsResponse, GetCoinsParams>({
       query: (params) => {
-        const { limit = 50, offset = 0, orderBy } = params;
-        const queryParams = new URLSearchParams({
-          limit: limit.toString(),
-          offset: offset.toString(),
-        });
+        const { limit = 50, offset = 0, orderBy, search, uuids } = params;
+        const queryParams = new URLSearchParams();
+
+        queryParams.append("limit", limit.toString());
+        queryParams.append("offset", offset.toString());
 
         if (orderBy) {
           queryParams.append("orderBy", orderBy);
         }
 
+        if (search?.trim()) {
+          queryParams.append("search", search.trim());
+        }
+
+        if (uuids && uuids.length > 0) {
+          uuids.forEach((uuid) => {
+            queryParams.append("uuids[]", uuid);
+          });
+        }
+
         return {
-          url: `/coins?${queryParams.toString()}`,
+          url: `/coins?${decodeURIComponent(queryParams.toString())}`,
           method: "GET",
         };
       },
@@ -41,13 +52,12 @@ export const coinsApi = createApi({
     getCoinHistory: builder.query<CoinHistoryResponse, GetCoinHistoryParams>({
       query: (params) => {
         const { uuid, timePeriod = "24h" } = params;
-        const queryParams = new URLSearchParams({
-          timePeriod: timePeriod,
-        });
-
         return {
-          url: `/coin/${uuid}/history?${queryParams.toString()}`,
+          url: `/coin/${uuid}/history`,
           method: "GET",
+          params: {
+            timePeriod,
+          },
         };
       },
     }),
@@ -55,4 +65,3 @@ export const coinsApi = createApi({
 });
 
 export const { useGetCoinsQuery, useGetCoinHistoryQuery } = coinsApi;
-

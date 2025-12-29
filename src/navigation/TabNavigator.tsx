@@ -1,11 +1,11 @@
 import { Alert, Pressable, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useAppDispatch } from "../store/hooks";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { signOut } from "../features/auth/authSlice";
-import HomeScreen from "../features/market/HomeScreen";
 import FavoritesScreen from "../features/favorites/FavoritesScreen";
+import HomeScreen from "../features/market/HomeScreen";
+import { useAppDispatch } from "../store/hooks";
 import { colors } from "../theme/colors";
 
 type TabParamList = {
@@ -19,7 +19,7 @@ export default function TabNavigator() {
   const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();
 
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     Alert.alert("Log Out", "Are you sure you want to log out?", [
       {
         text: "Cancel",

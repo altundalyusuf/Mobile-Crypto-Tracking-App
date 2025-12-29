@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -9,8 +9,8 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { clearError, login, signUp } from "./authSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { login, signUp, clearError } from "./authSlice";
 import { colors } from "../../theme/colors";
 
 type Mode = "login" | "signup";
@@ -28,10 +28,7 @@ const LoginScreen = () => {
   );
 
   const subtitle = useMemo(
-    () =>
-      mode === "login"
-        ? "Sign in to continue"
-        : "Sign up to get started",
+    () => (mode === "login" ? "Sign in to continue" : "Sign up to get started"),
     [mode]
   );
 
@@ -104,7 +101,11 @@ const LoginScreen = () => {
           )}
         </Pressable>
 
-        <Pressable style={styles.toggle} onPress={toggleMode} disabled={loading}>
+        <Pressable
+          style={styles.toggle}
+          onPress={toggleMode}
+          disabled={loading}
+        >
           <Text style={styles.toggleText}>
             {mode === "login"
               ? "Need an account? Sign up"
@@ -196,4 +197,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
-

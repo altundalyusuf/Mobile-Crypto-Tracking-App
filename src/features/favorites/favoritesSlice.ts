@@ -16,7 +16,6 @@ const initialState: FavoritesState = {
 
 const FAVORITES_STORAGE_KEY = "favorites";
 
-// Thunk 1: Load favorites from AsyncStorage on app start
 export const loadFavorites = createAsyncThunk(
   "favorites/loadFavorites",
   async (_, { rejectWithValue }) => {
@@ -35,7 +34,6 @@ export const loadFavorites = createAsyncThunk(
   }
 );
 
-// Thunk 2: Toggle favorite (add or remove) and persist to AsyncStorage
 export const toggleFavorite = createAsyncThunk(
   "favorites/toggleFavorite",
   async (coin: Coin, { getState, rejectWithValue }) => {
@@ -46,14 +44,11 @@ export const toggleFavorite = createAsyncThunk(
 
       let newFavorites: Coin[];
       if (isFavorite) {
-        // Remove from favorites
         newFavorites = currentFavorites.filter((fav) => fav.uuid !== coin.uuid);
       } else {
-        // Add to favorites
         newFavorites = [...currentFavorites, coin];
       }
 
-      // Persist to AsyncStorage
       await AsyncStorage.setItem(
         FAVORITES_STORAGE_KEY,
         JSON.stringify(newFavorites)
@@ -73,7 +68,6 @@ const favoritesSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // loadFavorites
     builder
       .addCase(loadFavorites.pending, (state) => {
         state.loading = true;
@@ -89,7 +83,6 @@ const favoritesSlice = createSlice({
         state.error = action.payload as string;
       });
 
-    // toggleFavorite
     builder
       .addCase(toggleFavorite.pending, (state) => {
         state.error = null;

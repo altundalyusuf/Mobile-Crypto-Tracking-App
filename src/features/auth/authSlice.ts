@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { User, Session, AuthError } from "@supabase/supabase-js";
+import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 
 interface AuthState {
@@ -18,7 +18,6 @@ const initialState: AuthState = {
   isAuthenticated: false,
 };
 
-// Async thunk to check and restore session on app start
 export const checkSession = createAsyncThunk(
   "auth/checkSession",
   async (_, { rejectWithValue }) => {
@@ -39,7 +38,6 @@ export const checkSession = createAsyncThunk(
   }
 );
 
-// Async thunk for login
 export const login = createAsyncThunk(
   "auth/login",
   async (
@@ -66,7 +64,6 @@ export const login = createAsyncThunk(
   }
 );
 
-// Async thunk for sign up
 export const signUp = createAsyncThunk(
   "auth/signUp",
   async (
@@ -93,7 +90,6 @@ export const signUp = createAsyncThunk(
   }
 );
 
-// Async thunk for sign out
 export const signOut = createAsyncThunk(
   "auth/signOut",
   async (_, { rejectWithValue }) => {
@@ -129,7 +125,6 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // checkSession
     builder
       .addCase(checkSession.pending, (state) => {
         state.loading = true;
@@ -148,7 +143,6 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       });
 
-    // login
     builder
       .addCase(login.pending, (state) => {
         state.loading = true;
@@ -167,7 +161,6 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       });
 
-    // signUp
     builder
       .addCase(signUp.pending, (state) => {
         state.loading = true;
@@ -186,7 +179,6 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       });
 
-    // signOut
     builder
       .addCase(signOut.pending, (state) => {
         state.loading = true;

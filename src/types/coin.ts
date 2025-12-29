@@ -8,6 +8,8 @@ export interface Coin {
   marketCap: string;
   rank: number;
   "24hVolume": string;
+  color?: string;
+  sparkline?: string[];
 }
 
 export interface CoinsResponse {
@@ -28,7 +30,9 @@ export interface CoinsResponse {
 export interface GetCoinsParams {
   limit?: number;
   offset?: number;
-  orderBy?: string; // e.g., "price", "marketCap", "24hVolume", "change"
+  orderBy?: string;
+  search?: string;
+  uuids?: string[];
 }
 
 export interface CoinHistoryPoint {
@@ -39,12 +43,12 @@ export interface CoinHistoryPoint {
 export interface CoinHistoryResponse {
   status: string;
   data: {
+    change: string;
     history: CoinHistoryPoint[];
   };
 }
 
 export interface GetCoinHistoryParams {
   uuid: string;
-  timePeriod?: string; // e.g., "24h", "7d", "30d"
+  timePeriod?: string;
 }
-
