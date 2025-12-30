@@ -81,8 +81,9 @@ export default function CoinDetailModal({
 
   if (!coin) return null;
 
-  const price = parseFloat(coin.price);
-  const change = parseFloat(coin.change);
+  // Safely parse values with fallback for invalid numbers
+  const price = parseFloat(coin.price) || 0;
+  const change = parseFloat(coin.change) || 0;
   const isPositive = change >= 0;
 
   return (
@@ -127,7 +128,7 @@ export default function CoinDetailModal({
                 ]}
               >
                 {isPositive ? "+" : ""}
-                {change.toFixed(2)}%
+                {isFinite(change) ? change.toFixed(2) : "0.00"}%
               </Text>
             </View>
 

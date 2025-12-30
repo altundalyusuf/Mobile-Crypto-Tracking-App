@@ -4,6 +4,10 @@
  * @returns Formatted price string (e.g., "$1,234.56" or "$0.000123")
  */
 export const formatPrice = (value: number): string => {
+  // Handle invalid numbers (NaN, Infinity, etc.)
+  if (!isFinite(value) || isNaN(value)) {
+    return "$0.00";
+  }
   if (value >= 1) {
     return `$${value.toFixed(2)}`;
   }
@@ -16,7 +20,15 @@ export const formatPrice = (value: number): string => {
  * @returns Formatted number string (e.g., "$1.23B", "$456.78M")
  */
 export const formatLargeNumber = (value: string): string => {
+  // Handle invalid or empty values
+  if (!value || value.trim() === "" || value.toLowerCase() === "n/a") {
+    return "$0.00";
+  }
   const num = parseFloat(value);
+  // Handle invalid numbers (NaN, Infinity, etc.)
+  if (!isFinite(num) || isNaN(num)) {
+    return "$0.00";
+  }
   if (num >= 1e12) {
     return `$${(num / 1e12).toFixed(2)}T`;
   }

@@ -20,9 +20,10 @@ function CoinCard({
   isFavorite = false,
 }: CoinCardProps) {
   const [imageError, setImageError] = useState(false);
-  const change = parseFloat(coin.change);
+  // Safely parse values with fallback for invalid numbers
+  const change = parseFloat(coin.change) || 0;
   const isPositive = change >= 0;
-  const price = parseFloat(coin.price);
+  const price = parseFloat(coin.price) || 0;
 
   const renderFallback = () => (
     <View style={styles.iconFallback}>
@@ -91,7 +92,7 @@ function CoinCard({
           ]}
         >
           {isPositive ? "+" : ""}
-          {change.toFixed(2)}%
+          {isFinite(change) ? change.toFixed(2) : "0.00"}%
         </Text>
       </View>
       <Pressable

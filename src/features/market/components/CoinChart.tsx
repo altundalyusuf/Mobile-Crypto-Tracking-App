@@ -25,8 +25,9 @@ export default function CoinChart({ coinId, priceChange }: CoinChartProps) {
     timePeriod: "24h",
   });
 
-  const chartColor =
-    parseFloat(priceChange) < 0 ? colors.error : colors.success;
+  // Safely parse priceChange with fallback
+  const parsedPriceChange = parseFloat(priceChange) || 0;
+  const chartColor = parsedPriceChange < 0 ? colors.error : colors.success;
 
   const { chartData, spacing, yAxisOffset, relativeMaxValue, minVal, maxVal } =
     useMemo(() => {
@@ -44,9 +45,24 @@ export default function CoinChart({ coinId, priceChange }: CoinChartProps) {
       const rawData = data.data.history;
       const filteredData = rawData.filter((_, index) => index % 5 === 0);
 
-      const processed = [...filteredData].reverse().map((point) => ({
-        value: parseFloat(point.price),
-      }));
+      const processed = [...filteredData]
+        .reverse()
+        .map((point) => {
+          const value = parseFloat(point.price) || 0;
+          return { value: isFinite(value) ? value : 0 };
+        })
+        .filter((d) => d.value > 0); // Filter out invalid/zero values
+
+      if (processed.length === 0) {
+        return {
+          chartData: [],
+          spacing: 0,
+          yAxisOffset: 0,
+          relativeMaxValue: 100,
+          minVal: 0,
+          maxVal: 0,
+        };
+      }
 
       const calculatedSpacing =
         processed.length > 1 ? CHART_WIDTH / (processed.length - 1) : 0;
