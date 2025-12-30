@@ -5,11 +5,13 @@ import {
   Image,
   Modal,
   PanResponder,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "../../../theme/colors";
 import { Coin } from "../../../types/coin";
 import CoinChart from "./CoinChart";
@@ -34,6 +36,7 @@ export default function CoinDetailModal({
   coin,
 }: CoinDetailModalProps) {
   const translateY = useRef(new Animated.Value(0)).current;
+  const insets = useSafeAreaInsets();
 
   const panResponder = useRef(
     PanResponder.create({
@@ -92,12 +95,19 @@ export default function CoinDetailModal({
       animationType="fade"
       transparent={true}
       onRequestClose={onClose}
+      statusBarTranslucent={Platform.OS === "android"}
     >
       <View style={styles.overlay}>
         <Pressable style={styles.backdrop} onPress={onClose} />
 
         <Animated.View
-          style={[styles.sheet, { transform: [{ translateY }] }]}
+          style={[
+            styles.sheet,
+            {
+              transform: [{ translateY }],
+              paddingBottom: Math.max(insets.bottom, 24),
+            },
+          ]}
           {...panResponder.panHandlers}
         >
           {/* Handle Bar (Drag Zone)*/}
@@ -168,7 +178,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     maxHeight: "90%",
     width: "100%",
-    paddingBottom: 24,
   },
   handleBarContainer: {
     alignItems: "center",

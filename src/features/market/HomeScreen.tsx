@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -277,8 +278,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     lineHeight: 20,
-    includeFontPadding: false,
-    textAlignVertical: "center",
+    ...Platform.select({
+      android: {
+        includeFontPadding: false,
+        textAlignVertical: "center",
+      },
+    }),
   },
   filterChipTextSelected: {
     color: colors.text,
