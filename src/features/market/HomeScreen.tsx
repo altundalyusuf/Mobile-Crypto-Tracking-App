@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Keyboard,
   Platform,
   Pressable,
   StyleSheet,
@@ -133,18 +134,20 @@ export default function HomeScreen() {
     );
   };
 
+  let content;
+
   if ((isLoading || (isFetching && offset === 0)) && allCoins.length === 0) {
-    return (
-      <View style={styles.container}>
+    // Loading state
+    content = (
+      <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Loading coins...</Text>
       </View>
     );
-  }
-
-  if (error && allCoins.length === 0) {
-    return (
-      <View style={styles.container}>
+  } else if (error && allCoins.length === 0) {
+    // Error state
+    content = (
+      <View style={styles.centerContainer}>
         <Text style={styles.errorText}>Error loading coins</Text>
         <Text style={styles.errorSubtext}>
           {"status" in error
@@ -152,6 +155,39 @@ export default function HomeScreen() {
             : "Please try again later"}
         </Text>
       </View>
+    );
+  } else {
+    // List state
+    content = (
+      <FlatList
+        data={allCoins}
+        renderItem={renderCoin}
+        keyExtractor={(item) => item.uuid}
+        contentContainerStyle={styles.listContent}
+        style={styles.coinList}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>
+            {debouncedSearch ? "No coins found" : "No coins available"}
+          </Text>
+        }
+        removeClippedSubviews={true}
+        initialNumToRender={10}
+        maxToRenderPerBatch={5}
+        windowSize={5}
+        getItemLayout={(data, index) => ({
+          length: 72,
+          offset: 72 * index,
+          index,
+        })}
+        // Keyboard to be dismissed when the list is scrolled
+        keyboardShouldPersistTaps="handled"
+        onScrollBeginDrag={() => {
+          Keyboard.dismiss();
+        }}
+      />
     );
   }
 
@@ -183,6 +219,7 @@ export default function HomeScreen() {
           />
         )}
       </View>
+
       <FlatList
         horizontal
         data={filterOptions}
@@ -190,30 +227,11 @@ export default function HomeScreen() {
         keyExtractor={(item) => item.key}
         contentContainerStyle={styles.filtersContainer}
         showsHorizontalScrollIndicator={false}
+        style={{ flexGrow: 0 }}
       />
-      <FlatList
-        data={allCoins}
-        renderItem={renderCoin}
-        keyExtractor={(item) => item.uuid}
-        contentContainerStyle={styles.listContent}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooter}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>
-            {debouncedSearch ? "No coins found" : "No coins available"}
-          </Text>
-        }
-        removeClippedSubviews={true}
-        initialNumToRender={10}
-        maxToRenderPerBatch={5}
-        windowSize={5}
-        getItemLayout={(data, index) => ({
-          length: 72,
-          offset: 72 * index,
-          index,
-        })}
-      />
+
+      {content}
+
       <CoinDetailModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
@@ -227,6 +245,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   searchContainer: {
     flexDirection: "row",
@@ -260,7 +283,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 20,
     marginRight: 8,
-    marginBottom: 24,
+    marginBottom: 8,
     borderWidth: 1,
     height: 42,
     alignItems: "center",
@@ -291,9 +314,13 @@ const styles = StyleSheet.create({
   filterChipTextUnselected: {
     color: colors.textSecondary,
   },
+  coinList: {
+    flex: 1,
+  },
   listContent: {
     paddingTop: 8,
     paddingBottom: 16,
+    flexGrow: 1,
   },
   loadingText: {
     color: colors.textSecondary,
