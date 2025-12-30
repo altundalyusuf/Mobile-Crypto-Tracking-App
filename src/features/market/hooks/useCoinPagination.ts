@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Coin } from "../../../types/coin";
-import { CoinsResponse } from "../../../types/coin";
+import { Coin, CoinsResponse } from "../../../types/coin";
 
 interface UseCoinPaginationParams {
   data: CoinsResponse | undefined;
@@ -8,6 +7,7 @@ interface UseCoinPaginationParams {
   offset: number;
   debouncedSearch: string;
   orderBy: string;
+  isFetching: boolean;
 }
 
 interface UseCoinPaginationReturn {
@@ -25,6 +25,7 @@ export const useCoinPagination = ({
   offset,
   debouncedSearch,
   orderBy,
+  isFetching,
 }: UseCoinPaginationParams): UseCoinPaginationReturn => {
   const [allCoins, setAllCoins] = useState<Coin[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -36,6 +37,10 @@ export const useCoinPagination = ({
 
   // Aggregate coins data with duplicate filtering
   useEffect(() => {
+    if (offset === 0 && isFetching) {
+      return;
+    }
+
     if (data?.data?.coins) {
       const newCoins = data.data.coins;
 
@@ -60,7 +65,7 @@ export const useCoinPagination = ({
         setHasMore(true);
       }
     }
-  }, [data, offset, debouncedSearch, orderBy, limit]);
+  }, [data, offset, debouncedSearch, orderBy, limit, isFetching]);
 
   return {
     allCoins,

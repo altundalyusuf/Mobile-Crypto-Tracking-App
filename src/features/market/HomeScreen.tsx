@@ -51,6 +51,7 @@ export default function HomeScreen() {
     offset,
     debouncedSearch,
     orderBy,
+    isFetching,
   });
 
   const handleLoadMore = useCallback(() => {
@@ -131,7 +132,7 @@ export default function HomeScreen() {
     );
   };
 
-  if (isLoading && allCoins.length === 0) {
+  if ((isLoading || (isFetching && offset === 0)) && allCoins.length === 0) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color={colors.primary} />
