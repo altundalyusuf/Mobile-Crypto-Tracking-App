@@ -63,8 +63,18 @@ This project demonstrates robust architecture, secure authentication, and real-t
     npx expo start -c
     ```
 
-    ## 📸 Screenshots
+## 📸 Screenshots
 
-|                       Home Screen                       |                        Detail View                        |                          Favorites                           |
-| :-----------------------------------------------------: | :-------------------------------------------------------: | :----------------------------------------------------------: |
-| <img src="./assets/screenshots/home.png" width="250" /> | <img src="./assets/screenshots/detail.png" width="250" /> | <img src="./assets/screenshots/favorites.png" width="250" /> |
+<div align="center">
+
+### Main Screens
+
+|                     Login Screen                      |                      Home Screen                      |                      Detail View                      |                       Favorites                       |
+| :---------------------------------------------------: | :---------------------------------------------------: | :---------------------------------------------------: | :---------------------------------------------------: |
+| <img src="./assets/screenshots/1.jpeg" width="200" /> | <img src="./assets/screenshots/2.jpeg" width="200" /> | <img src="./assets/screenshots/6.jpeg" width="200" /> | <img src="./assets/screenshots/5.jpeg" width="200" /> |
+
+### Additional Views
+
+<img src="./assets/screenshots/3.jpeg" width="200" /> <img src="./assets/screenshots/4.jpeg" width="200" /> <img src="./assets/screenshots/7.jpeg" width="200" />
+
+</div>
