@@ -33,7 +33,7 @@ export default function HomeScreen() {
   const [orderBy, setOrderBy] = useState("marketCap");
 
   const debouncedSearch = useDebounce(searchText.trim(), 500);
-  // There is a bug in the API, so we need to add a minimum length of 2 for the search.
+  // API requires minimum search length of 2 characters
   const validSearch = debouncedSearch.length >= 2 ? debouncedSearch : undefined;
 
   useEffect(() => {
@@ -125,7 +125,9 @@ export default function HomeScreen() {
   };
 
   const renderFooter = () => {
-    if (!isFetching || isLoading) return null;
+    if (!isFetching || isLoading) {
+      return null;
+    }
     return (
       <View style={styles.footer}>
         <ActivityIndicator size="small" color={colors.primary} />
@@ -137,7 +139,6 @@ export default function HomeScreen() {
   let content;
 
   if ((isLoading || (isFetching && offset === 0)) && allCoins.length === 0) {
-    // Loading state
     content = (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color={colors.primary} />
@@ -145,7 +146,6 @@ export default function HomeScreen() {
       </View>
     );
   } else if (error && allCoins.length === 0) {
-    // Error state
     content = (
       <View style={styles.centerContainer}>
         <Text style={styles.errorText}>Error loading coins</Text>
@@ -157,7 +157,6 @@ export default function HomeScreen() {
       </View>
     );
   } else {
-    // List state
     content = (
       <FlatList
         data={allCoins}
@@ -182,7 +181,6 @@ export default function HomeScreen() {
           offset: 72 * index,
           index,
         })}
-        // Keyboard to be dismissed when the list is scrolled
         keyboardShouldPersistTaps="handled"
         onScrollBeginDrag={() => {
           Keyboard.dismiss();
@@ -227,7 +225,7 @@ export default function HomeScreen() {
         keyExtractor={(item) => item.key}
         contentContainerStyle={styles.filtersContainer}
         showsHorizontalScrollIndicator={false}
-        style={{ flexGrow: 0 }}
+        style={styles.filterList}
       />
 
       {content}
@@ -278,6 +276,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     gap: 8,
+  },
+  filterList: {
+    flexGrow: 0,
   },
   filterChip: {
     paddingHorizontal: 16,

@@ -25,7 +25,6 @@ export default function CoinChart({ coinId, priceChange }: CoinChartProps) {
     timePeriod: "24h",
   });
 
-  // Safely parse priceChange with fallback
   const parsedPriceChange = parseFloat(priceChange) || 0;
   const chartColor = parsedPriceChange < 0 ? colors.error : colors.success;
 
@@ -51,7 +50,7 @@ export default function CoinChart({ coinId, priceChange }: CoinChartProps) {
           const value = parseFloat(point.price) || 0;
           return { value: isFinite(value) ? value : 0 };
         })
-        .filter((d) => d.value > 0); // Filter out invalid/zero values
+        .filter((d) => d.value > 0);
 
       if (processed.length === 0) {
         return {

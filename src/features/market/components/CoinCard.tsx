@@ -20,7 +20,6 @@ function CoinCard({
   isFavorite = false,
 }: CoinCardProps) {
   const [imageError, setImageError] = useState(false);
-  // Safely parse values with fallback for invalid numbers
   const change = parseFloat(coin.change) || 0;
   const isPositive = change >= 0;
   const price = parseFloat(coin.price) || 0;

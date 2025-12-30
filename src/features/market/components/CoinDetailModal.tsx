@@ -43,18 +43,18 @@ export default function CoinDetailModal({
       onStartShouldSetPanResponder: () => true,
 
       onPanResponderGrant: () => {
-        // We are not using offset, starting from 0
+        // Initialize gesture tracking from zero offset
       },
 
       onPanResponderMove: (_, gestureState) => {
-        // Only allow downward movement
+        // Restrict movement to downward direction only
         if (gestureState.dy >= 0) {
           translateY.setValue(gestureState.dy);
         }
       },
 
       onPanResponderRelease: (_, gestureState) => {
-        // If the modal is dragged quickly or sufficiently downward, close it
+        // Close modal if dragged beyond threshold or with sufficient velocity
         if (gestureState.dy > DRAG_THRESHOLD || gestureState.vy > 0.5) {
           Animated.timing(translateY, {
             toValue: SCREEN_HEIGHT,
@@ -64,7 +64,7 @@ export default function CoinDetailModal({
             onClose();
           });
         } else {
-          // If the modal is not closed, spring back to the original position
+          // Spring back to original position if drag threshold not met
           Animated.spring(translateY, {
             toValue: 0,
             useNativeDriver: true,
@@ -75,7 +75,7 @@ export default function CoinDetailModal({
     })
   ).current;
 
-  // Reset the position when the modal is opened
+  // Reset modal position on open
   useEffect(() => {
     if (visible) {
       translateY.setValue(0);
@@ -84,7 +84,6 @@ export default function CoinDetailModal({
 
   if (!coin) return null;
 
-  // Safely parse values with fallback for invalid numbers
   const price = parseFloat(coin.price) || 0;
   const change = parseFloat(coin.change) || 0;
   const isPositive = change >= 0;
@@ -110,12 +109,10 @@ export default function CoinDetailModal({
           ]}
           {...panResponder.panHandlers}
         >
-          {/* Handle Bar (Drag Zone)*/}
           <View style={styles.handleBarContainer}>
             <View style={styles.handleBar} />
           </View>
 
-          {/* Content */}
           <View style={styles.content}>
             <View style={styles.header}>
               <Image
