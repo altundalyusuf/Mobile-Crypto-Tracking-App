@@ -1,4 +1,13 @@
-import { ActivityIndicator, Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -86,7 +95,11 @@ export default function TabNavigator() {
                 {authLoading ? (
                   <ActivityIndicator size="small" color={colors.text} />
                 ) : (
-                  <Ionicons name="log-out-outline" size={24} color={colors.text} />
+                  <Ionicons
+                    name="log-out-outline"
+                    size={24}
+                    color={colors.text}
+                  />
                 )}
               </Pressable>
             ),
@@ -110,7 +123,11 @@ export default function TabNavigator() {
                 {authLoading ? (
                   <ActivityIndicator size="small" color={colors.text} />
                 ) : (
-                  <Ionicons name="log-out-outline" size={24} color={colors.text} />
+                  <Ionicons
+                    name="log-out-outline"
+                    size={24}
+                    color={colors.text}
+                  />
                 )}
               </Pressable>
             ),
@@ -118,7 +135,13 @@ export default function TabNavigator() {
         />
       </Tab.Navigator>
       {authLoading && (
-        <Modal transparent visible={authLoading} animationType="fade">
+        <Modal
+          transparent
+          visible={authLoading}
+          animationType="fade"
+          onRequestClose={() => {}}
+          statusBarTranslucent={Platform.OS === "android"}
+        >
           <View style={styles.loadingOverlay}>
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color={colors.primary} />

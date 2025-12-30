@@ -108,8 +108,11 @@ const LoginScreen = () => {
         >
           <Text style={styles.toggleText}>
             {mode === "login"
-              ? "Need an account? Sign up"
-              : "Already have an account? Login"}
+              ? "Need an account? "
+              : "Already have an account? "}
+            <Text style={styles.toggleHighlight}>
+              {mode === "login" ? "Sign up" : "Login"}
+            </Text>
           </Text>
         </Pressable>
       </View>
@@ -188,6 +191,10 @@ const styles = StyleSheet.create({
   toggleText: {
     color: colors.textSecondary,
     fontSize: 14,
+  },
+  toggleHighlight: {
+    color: colors.primary,
+    fontWeight: "600",
   },
   error: {
     color: colors.error,
