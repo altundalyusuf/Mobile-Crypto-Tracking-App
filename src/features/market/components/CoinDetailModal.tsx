@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import {
   Animated,
   Dimensions,
-  Image,
   Modal,
   PanResponder,
   Platform,
@@ -11,15 +10,12 @@ import {
   Text,
   View,
 } from "react-native";
+import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "../../../theme/colors";
 import { Coin } from "../../../types/coin";
 import CoinChart from "./CoinChart";
-import {
-  formatPrice,
-  formatLargeNumber,
-  getImageUrl,
-} from "../../../utils/formatters";
+import { formatPrice, formatLargeNumber } from "../../../utils/formatters";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const DRAG_THRESHOLD = 100;
@@ -116,9 +112,11 @@ export default function CoinDetailModal({
           <View style={styles.content}>
             <View style={styles.header}>
               <Image
-                source={{ uri: getImageUrl(coin.iconUrl) }}
+                source={coin.iconUrl}
                 style={styles.coinIcon}
-                resizeMode="contain"
+                contentFit="contain"
+                transition={500}
+                cachePolicy="memory-disk"
               />
               <View style={styles.headerInfo}>
                 <Text style={styles.coinName}>{coin.name}</Text>

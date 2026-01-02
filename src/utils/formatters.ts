@@ -43,25 +43,3 @@ export const formatLargeNumber = (value: string): string => {
   }
   return `$${num.toFixed(2)}`;
 };
-
-/**
- * Extracts the file extension from a URL
- * @param url - The URL to extract extension from
- * @returns The file extension in lowercase (e.g., "svg", "png", "jpg")
- */
-export const getFileExtension = (url: string): string => {
-  if (!url) return "";
-  const match = url.match(/\.([^.?#]+)(\?|#|$)/);
-  return match ? match[1].toLowerCase() : "";
-};
-
-/**
- * Converts SVG URLs to PNG URLs for better compatibility
- * @param url - The image URL (may be SVG)
- * @returns The URL with .svg replaced by .png
- */
-export const getImageUrl = (url: string): string => {
-  if (!url) return "";
-  return url.replace(/\.svg$/i, ".png");
-};
-

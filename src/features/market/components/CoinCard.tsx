@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { SvgUri } from "react-native-svg";
 import { colors } from "../../../theme/colors";
 import { Coin } from "../../../types/coin";
-import { formatPrice, getFileExtension } from "../../../utils/formatters";
+import { formatPrice } from "../../../utils/formatters";
+import { Image } from "expo-image";
 
 interface CoinCardProps {
   coin: Coin;
@@ -33,40 +33,19 @@ function CoinCard({
   );
 
   const renderIcon = () => {
-    if (!coin.iconUrl || imageError) {
+    if (imageError || !coin.iconUrl) {
       return renderFallback();
     }
 
-    const fileExtension = getFileExtension(coin.iconUrl);
-    const isSvg = fileExtension === "svg";
-    const isImage =
-      fileExtension === "png" ||
-      fileExtension === "jpg" ||
-      fileExtension === "jpeg";
-
-    if (isSvg) {
-      return (
-        <SvgUri
-          uri={coin.iconUrl}
-          width={40}
-          height={40}
-          onError={() => setImageError(true)}
-        />
-      );
-    }
-
-    if (isImage) {
-      return (
-        <Image
-          source={{ uri: coin.iconUrl }}
-          style={styles.icon}
-          onError={() => setImageError(true)}
-          resizeMode="contain"
-        />
-      );
-    }
-
-    return renderFallback();
+    return (
+      <Image
+        source={{ uri: coin.iconUrl }}
+        style={{ width: 40, height: 40 }}
+        contentFit="contain"
+        transition={200}
+        onError={() => setImageError(true)}
+      />
+    );
   };
 
   return (
