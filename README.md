@@ -1,4 +1,4 @@
-# 🚀 Marsky Crypto
+# 🚀 Mobile Crypto Tracking App
 
 A professional SaaS-style cryptocurrency dashboard built with **React Native (Expo)** and **Supabase**.
 This project demonstrates robust architecture, secure authentication, and real-time data visualization.
